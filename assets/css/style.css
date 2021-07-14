@@ -7,6 +7,12 @@ body {
     background-color: blanchedalmond;
 }
 
+section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
 section h2 {
     font-size: 1.2rem;
     margin: 1rem;

@@ -1,6 +1,6 @@
+var time_limit;
 const questions  = [
 {q: "Javascript is one of the basics of any web developer?", a:["True","False"]},
-{q: "what is a function?", a: ["A block of code for a specific function that can be reused", "Block of code used only once", "A way to assign variables","Imported code from Java"]},
 {q: "What does DOM stand for?", a: ["Document Object Model", "Direct Object Model", "Document On Model", "Direct Orientation Model"]},
 {q: "What is ''document.querySelector used for?''?", a: ["To select a specfic element from within the DOM", "To remove objects", "To select type of  new element to create", "To convert objects to string"]},
 {q: "What is event delegation?", a: ["The process of attaching the event listeners from the child elements to the parents (Bubbling)", "Ask another person to check your code","A type of event organization where you start with the most important task first"]},
@@ -10,7 +10,33 @@ const questions  = [
 {q: "Javascript was invented to replace CSS styling", a: ["False","True"]},
 {q: "What does API stand for?", a: ["Application Programming Interface", "Analysis Process Integration", "Additional Protocol Inclusion", "Application Protocol Interface"]}
 ];
-var time_limit = questions.length*5; // 5 seconds pero questions
+var TimerEl = document.getElementById("timer");
+var setTimer = time_per_question => {time_limit = time_per_question * questions.length }
+
+var displayTime = function (){
+    let total_seconds = time_limit;
+    this.hours = Math.floor(total_seconds/60);
+    total_seconds = total_seconds - (this.hours * 60);
+    this.minutes = Math.floor(total_seconds/60);
+    total_seconds = total_seconds - (this.minutes * 60);
+    this.seconds = total_seconds;
+    if(this.hours < 10)
+    {
+        this.hours = "0" + this.hours;
+    }
+    if(this.minutes < 10)
+    {
+        this.minutes = "0" + this.minutes;
+    }
+
+    if(this.seconds < 10)
+    {
+        this.seconds = "0" + this.seconds;
+    }
+
+    return (this.hours + ":" + this.minutes  + ":" + this.seconds);
+};
+
 question_counter = 0;
 var bodyEl = document.querySelector('body');
 var formEl = document.createElement('form');
@@ -96,7 +122,19 @@ var setClickEvent = function()
         });
     }
 }
-
+setTimer(5); //parameter is the amount of time per question in seconds
+var countdown = setInterval(function(){
+    if(time_limit >= 0)
+    {
+    TimerEl.innerText = displayTime();
+    time_limit--;
+    }
+    else {
+        TimerEl.innerText = "00:00:00";
+        alert("Time's up!");
+        clearInterval(countdown);
+    }
+},1000)
 load_data();
 
 
