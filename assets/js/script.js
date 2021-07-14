@@ -1,17 +1,75 @@
-var time_limit;
 const questions  = [
-{q: "Javascript is one of the basics of any web developer?", a:["True","False"]},
+{q: "Commonly used data types DO Not include:", a:["alerts","strings","booleans","numbers"]},
 {q: "What does DOM stand for?", a: ["Document Object Model", "Direct Object Model", "Document On Model", "Direct Orientation Model"]},
-{q: "What is ''document.querySelector used for?''?", a: ["To select a specfic element from within the DOM", "To remove objects", "To select type of  new element to create", "To convert objects to string"]},
-{q: "What is event delegation?", a: ["The process of attaching the event listeners from the child elements to the parents (Bubbling)", "Ask another person to check your code","A type of event organization where you start with the most important task first"]},
-{q: "What will document.createElement(''div'')do?", a:["Create a new div element","Nothing will return an error", "Create an img tag", "Create a div string"]},
-{q: "What is the purpose of event.preventDefault()", a: ["Stop the normal action of an element from occuring","Stops Memory Waste","Stops javascript from infinite looops"]},
-{q: "What is the difference between document.querySelector(''#example'') and document.getElementbyId(''example'')?", a: ["Nothing","getElementbyId is for classes", "querySelector searches in javascript"]},
-{q: "Javascript was invented to replace CSS styling", a: ["False","True"]},
+{q: "The condition in an if/else statement is enclosed with _________.", a: ["parenthesis", "quotes", "curly brackets", "square brackets"]},
+{q: "Arrays in JavaScript can be used to store_________.", a: ["All of the above", "numbers and strings","other arrays","booleans"]},
+{q: "String values must be enclosed within_________.", a:["quotes","curly brackets", "commas", "parenthesis"]},
+{q: "A very useful tool used during development and debugging for printing content to the debugger is:", a: ["console.log","JavaScript","terminal/bash","for loops"]},
 {q: "What does API stand for?", a: ["Application Programming Interface", "Analysis Process Integration", "Additional Protocol Inclusion", "Application Protocol Interface"]}
 ];
+var time_limit;
 var TimerEl = document.getElementById("timer");
-var setTimer = time_per_question => {time_limit = time_per_question * questions.length }
+
+//Declaring the initial DOM Elements 
+question_counter = 0;
+var bodyEl = document.querySelector('body');
+var headerEl = document.createElement('header');
+var highscore_divEl = document.createElement('div');
+var highscore_h2El = document.createElement('h2');
+var timer_divEl = document.createElement('div');
+var timer_h2El = document.createElement('h2');
+var formEl = document.createElement('form');
+var maincontainerEl = document.createElement("div");
+var question_containerEl = document.createElement("div");
+var button_parent_containerEl = document.createElement("div");
+var button_containerEl = document.createElement("div");
+var start_button_containerEl = document.createElement("div");
+var start_buttonEl = document.createElement('button');
+
+//Assigning properties to initial DOM Elements
+highscore_h2El.id = "view-highscore";
+highscore_h2El.innerHTML = "View High Scores!";
+timer_h2El.id = "view-highscore";
+timer_h2El.innerHTML = "Time: 00:00:00";
+highscore_divEl.appendChild(highscore_h2El);
+timer_divEl.appendChild(timer_h2El);
+headerEl.appendChild(highscore_divEl);
+headerEl.appendChild(timer_divEl);
+bodyEl.appendChild(headerEl);
+formEl.id = "form-container";
+maincontainerEl.className = "main-container";
+question_containerEl.id = "question-container";
+questionh1El = document.createElement('h1');
+questionh1El.id = "question";
+questionh1El.innerHTML = "Coding Quiz Challenge";
+subTextEl = document.createElement('span');
+subTextEl.id = "subtext";
+subTextEl.innerText = "Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!";
+questionh1El.appendChild(subTextEl);
+question_containerEl.appendChild(questionh1El);
+button_parent_containerEl.className = "button-parent-container";
+button_containerEl.className = "button-container";
+start_button_containerEl.id = "start-button";
+start_buttonEl.className = "start-button";
+start_buttonEl.innerText = "Start Quiz";
+
+
+// Attaching DOM Elements to container
+start_button_containerEl.appendChild(start_buttonEl);
+button_containerEl.appendChild(start_button_containerEl);
+button_parent_containerEl.appendChild(button_containerEl);
+maincontainerEl.appendChild(questionh1El);
+maincontainerEl.appendChild(button_parent_containerEl);
+formEl.appendChild(maincontainerEl);
+bodyEl.appendChild(formEl);
+
+var the_end = function () {
+
+};
+
+var setTimer = function(time_per_question) {
+    time_limit = time_per_question * questions.length 
+    }
 
 var displayTime = function (){
     let total_seconds = time_limit;
@@ -37,105 +95,117 @@ var displayTime = function (){
     return (this.hours + ":" + this.minutes  + ":" + this.seconds);
 };
 
-question_counter = 0;
-var bodyEl = document.querySelector('body');
-var formEl = document.createElement('form');
-var QuestionEl = document.createElement('h2');
-QuestionEl.id = "question";
-bodyEl.appendChild(formEl);
-formEl.appendChild(QuestionEl);
-
-var load_data = function () {
-    if(question_counter < questions.length)
-    {
-    QuestionEl.textContent = questions[question_counter].q;
-    var copy = randomize(questions[question_counter].a);
-        for(var i = 0; i < questions[question_counter].a.length; i++)
-        {
-            var divEl = document.createElement('div');
-            divEl.id = i;
-            var responseEl = document.createElement('p');
-            responseEl.innerText = copy[i];
-            divEl.appendChild(responseEl);
-            formEl.appendChild(divEl);
-        }
-    }
-
-    setClickEvent();
-}
-
-var removefromArray = function(value,array) {
-  new_array = [];
-  for(var i = 0; i < array.length; i++)
-  {
-      if(array[i] !== value)
-      {
-          new_array.push(array[i]);
-      }
-  }
-  return new_array;
-}
-
-var randomize = function(array){
-    var new_array = [];
-    var temp_array = array;
-    for(var i = 0; i < array.length; i++)
-    {
-        var index = Math.floor(Math.random()*temp_array.length);
-        new_array.push(temp_array[index]);
-        temp_array = removefromArray(temp_array[index],temp_array);
-    }
-    return new_array;
-}
-
-var Check_Response = function (clicked, response){
-    if(clicked === questions[question_counter].a[0])
-    {
-        alert("Correct!");
-    }else
-    {
-        alert("Wrong!");
-    }
-    if(question_counter < questions.length)
-    {
-    question_counter++;
-    update_form(response);
-    load_data();
-    }
-}
-
-var update_form = function(Element_Array) {
-    for(var i = 0; i < Element_Array.length; i++)
-    {
-        formEl.removeChild(Element_Array[i]);
-    }
-}
-
-var setClickEvent = function()
+var setClickEvent = function(event)
 {
-    var response = document.querySelectorAll("form div");
+    var response = document.querySelectorAll(".response-container");
     for(var i = 0; i < response.length; i++)
     {
         response[i].addEventListener('click', function(event) {
-           var clicked = event.target.innerText;
+         var clicked = event.target.innerText;
+          event.preventDefault();
+           console.log(clicked);
            Check_Response(clicked, response);
         });
     }
 }
-setTimer(5); //parameter is the amount of time per question in seconds
-var countdown = setInterval(function(){
-    if(time_limit >= 0)
+
+
+var load_data = function () {
+    if(question_counter < questions.length)
     {
-    TimerEl.innerText = displayTime();
-    time_limit--;
+        questionh1El.innerHTML = questions[question_counter].q;
+        questionh1El.className = "question";
+        questionh1El.id = "";
+         var copy = randomize(questions[question_counter].a);
+        for(var i = 0; i < questions[question_counter].a.length; i++)
+        {
+            var div_responsecontainerEl = document.createElement('div');
+            div_responsecontainerEl.className = "response-container";
+            div_responsecontainerEl.id = i;
+            var responseEl = document.createElement('button');
+            responseEl.className = "start-button response";
+            var text = (i + 1) + ". " + copy[i];
+            responseEl.innerText = text;
+            div_responsecontainerEl.appendChild(responseEl);
+            button_containerEl.appendChild(div_responsecontainerEl);
+        }
+        setClickEvent();
     }
     else {
-        TimerEl.innerText = "00:00:00";
-        alert("Time's up!");
-        clearInterval(countdown);
+        questionh1El.innerHTML = "All done!";
     }
-},1000)
-load_data();
+}
+
+    var removefromArray = function(value,array) {
+    new_array = [];
+    for(var i = 0; i < array.length; i++)
+    {
+        if(array[i] !== value)
+        {
+            new_array.push(array[i]);
+        }
+    }
+    return new_array;
+    }
+
+    var randomize = function(array){
+        var new_array = [];
+        var temp_array = array;
+        for(var i = 0; i < array.length; i++)
+        {
+            var index = Math.floor(Math.random()*temp_array.length);
+            new_array.push(temp_array[index]);
+            temp_array = removefromArray(temp_array[index],temp_array);
+        }
+        return new_array;
+    }
+
+    var Check_Response = function (clicked, response){
+
+        if(clicked.substring(3,clicked.length) === questions[question_counter].a[0])
+        {
+            alert("Correct!");
+        }else
+        {
+            alert("Wrong!");
+        }
+        if(question_counter < questions.length)
+        {
+        question_counter++;
+        update_form(response);
+        load_data();
+        }
+    };
+
+    var update_form = function(Element_Array) {
+        for(var i = 0; i < Element_Array.length; i++)
+        {
+            button_containerEl.removeChild(Element_Array[i]);
+        }
+    }
+
+
+    setTimer(5); //parameter is the amount of time per question in seconds
+    var countdown = setInterval(function(){
+        if(time_limit >= 0)
+        {
+        timer_h2El.innerText = displayTime();
+        time_limit--;
+        }
+        else {
+            timer_h2El.innerText = "00:00:00";
+            alert("Time's up!");
+            clearInterval(countdown);
+        }
+    },1000)
+
+
+start_buttonEl.onclick = function() {
+    event.preventDefault();
+    start_button_containerEl.removeChild(start_buttonEl);
+    button_containerEl.removeChild(start_button_containerEl);
+    load_data();
+};
 
 
 
