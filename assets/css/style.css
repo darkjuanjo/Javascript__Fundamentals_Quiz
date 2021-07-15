@@ -61,6 +61,12 @@ form div #question span {
     text-align:center;
 }
 
+#subtext {
+ font-weight: normal;
+ padding-top: 10px;
+ 
+}
+
 .button-container
 {
     display: flex;

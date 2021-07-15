@@ -7,11 +7,14 @@ const questions  = [
 {q: "A very useful tool used during development and debugging for printing content to the debugger is:", a: ["console.log","JavaScript","terminal/bash","for loops"]},
 {q: "What does API stand for?", a: ["Application Programming Interface", "Analysis Process Integration", "Additional Protocol Inclusion", "Application Protocol Interface"]}
 ];
+
+//None DOM global variables
 var time_limit;
-var TimerEl = document.getElementById("timer");
+var timerobject;
+var status = 0; //is the game finished?
+var question_counter = 0;
 
 //Declaring the initial DOM Elements 
-question_counter = 0;
 var bodyEl = document.querySelector('body');
 var headerEl = document.createElement('header');
 var highscore_divEl = document.createElement('div');
@@ -25,6 +28,8 @@ var button_parent_containerEl = document.createElement("div");
 var button_containerEl = document.createElement("div");
 var start_button_containerEl = document.createElement("div");
 var start_buttonEl = document.createElement('button');
+var check_El = document.createElement('h2');
+var TimerEl = document.getElementById("timer");
 
 //Assigning properties to initial DOM Elements
 highscore_h2El.id = "view-highscore";
@@ -43,7 +48,6 @@ questionh1El = document.createElement('h1');
 questionh1El.id = "question";
 questionh1El.innerHTML = "Coding Quiz Challenge";
 subTextEl = document.createElement('span');
-subTextEl.id = "subtext";
 subTextEl.innerText = "Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!";
 questionh1El.appendChild(subTextEl);
 question_containerEl.appendChild(questionh1El);
@@ -52,6 +56,7 @@ button_containerEl.className = "button-container";
 start_button_containerEl.id = "start-button";
 start_buttonEl.className = "start-button";
 start_buttonEl.innerText = "Start Quiz";
+check_El.id = "check";
 
 
 // Attaching DOM Elements to container
@@ -60,11 +65,40 @@ button_containerEl.appendChild(start_button_containerEl);
 button_parent_containerEl.appendChild(button_containerEl);
 maincontainerEl.appendChild(questionh1El);
 maincontainerEl.appendChild(button_parent_containerEl);
+maincontainerEl.appendChild(check_El);
 formEl.appendChild(maincontainerEl);
 bodyEl.appendChild(formEl);
 
-var the_end = function () {
 
+function timer () {
+    var countdown = setInterval(function(){
+        if(time_limit >= 0 && status === "0")
+        {
+            time_limit--;
+            timer_h2El.innerText = displayTime();
+        } 
+        else if (status === "1") {
+            clearInterval(countdown);
+        }
+        else {
+            timer_h2El.innerText = "Time: 00:00:00";
+            alert("Time's up!");
+            time_limit = 0;
+            clearInterval(countdown);
+            the_end();
+        }
+    },1000);
+
+    return timer;
+}
+
+var the_end = function () {
+    var buttons = document.querySelectorAll(".response-container");
+    update_form(buttons);
+    questionh1El.innerHTML = "All done!";
+    subTextEl.innerText = "Your final score is " + time_limit;
+    subTextEl.id = "subtext";
+    questionh1El.appendChild(subTextEl);
 };
 
 var setTimer = function(time_per_question) {
@@ -73,7 +107,7 @@ var setTimer = function(time_per_question) {
 
 var displayTime = function (){
     let total_seconds = time_limit;
-    this.hours = Math.floor(total_seconds/60);
+    this.hours = Math.floor(total_seconds/3600);
     total_seconds = total_seconds - (this.hours * 60);
     this.minutes = Math.floor(total_seconds/60);
     total_seconds = total_seconds - (this.minutes * 60);
@@ -92,7 +126,7 @@ var displayTime = function (){
         this.seconds = "0" + this.seconds;
     }
 
-    return (this.hours + ":" + this.minutes  + ":" + this.seconds);
+    return ("Time: " + this.hours + ":" + this.minutes  + ":" + this.seconds);
 };
 
 var setClickEvent = function(event)
@@ -103,7 +137,6 @@ var setClickEvent = function(event)
         response[i].addEventListener('click', function(event) {
          var clicked = event.target.innerText;
           event.preventDefault();
-           console.log(clicked);
            Check_Response(clicked, response);
         });
     }
@@ -132,7 +165,8 @@ var load_data = function () {
         setClickEvent();
     }
     else {
-        questionh1El.innerHTML = "All done!";
+        status = 1;
+        the_end();
     }
 }
 
@@ -164,10 +198,17 @@ var load_data = function () {
 
         if(clicked.substring(3,clicked.length) === questions[question_counter].a[0])
         {
-            alert("Correct!");
+            check_El.innerText = "Correct!";
         }else
         {
-            alert("Wrong!");
+            check_El.innerText = "Wrong!";
+            if((time_limit - 10) >= 0)
+            {
+            time_limit = time_limit - 10;
+            }
+            else {
+                time_limit = 0;
+            }
         }
         if(question_counter < questions.length)
         {
@@ -185,25 +226,13 @@ var load_data = function () {
     }
 
 
-    setTimer(5); //parameter is the amount of time per question in seconds
-    var countdown = setInterval(function(){
-        if(time_limit >= 0)
-        {
-        timer_h2El.innerText = displayTime();
-        time_limit--;
-        }
-        else {
-            timer_h2El.innerText = "00:00:00";
-            alert("Time's up!");
-            clearInterval(countdown);
-        }
-    },1000)
+    setTimer(10); //parameter is the amount of time per question in seconds
 
-
-start_buttonEl.onclick = function() {
+start_buttonEl.onclick = function(event) {
     event.preventDefault();
     start_button_containerEl.removeChild(start_buttonEl);
     button_containerEl.removeChild(start_button_containerEl);
+    timerobject = timer();
     load_data();
 };
 
