@@ -60,6 +60,7 @@ check_El.id = "check";
 labelEl.htmtlFor = "text";
 labelEl.textContent = "Enter initials: "
 textboxEl.id = "text";
+textboxEl.maxLength = "3";
 SubmitEl.type = "submit";
 SubmitEl.value = "Submit";
 SubmitEl.id = "Submit";
@@ -117,7 +118,7 @@ if(time_limit > 0)
 items.push(player);
 }
 else {
-    alert("Score of 0...nothing to be proud of...will not be saved");
+    alert("Sorry score of 0...Please Try Again!");
 }
 if(items.length > 1)
 {
