@@ -112,7 +112,13 @@ var player = {
     name: textboxEl.value,
     score: time_limit
 }
+if(time_limit > 0)
+{
 items.push(player);
+}
+else {
+    alert("Score of 0...nothing to be proud of...will not be saved");
+}
 if(items.length > 1)
 {
  items = organize(items);
@@ -263,6 +269,10 @@ var load_data = function () {
             if((time_limit - 10) >= 0)
             {
             time_limit = time_limit - 10;
+            if(time_limit < 0)
+            {
+                time_limit = 0;
+            }
             }
             else {
                 time_limit = 0;
