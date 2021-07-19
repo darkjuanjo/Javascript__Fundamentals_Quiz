@@ -62,4 +62,3 @@ go_back_button.onclick = function(){
 }
 
 load_saved_data();
-console.log(listEl);
