@@ -17,6 +17,7 @@ var question_counter = 0;
 //Declaring the initial DOM Elements 
 var bodyEl = document.querySelector('body');
 var headerEl = document.createElement('header');
+var highscorelinkEl = document.createElement("a");
 var highscore_divEl = document.createElement('div');
 var highscore_h2El = document.createElement('h2');
 var timer_divEl = document.createElement('div');
@@ -30,17 +31,16 @@ var start_button_containerEl = document.createElement("div");
 var start_buttonEl = document.createElement('button');
 var check_El = document.createElement('h2');
 var TimerEl = document.getElementById("timer");
+var labelEl = document.createElement('lable');
+var textboxEl = document.createElement("input");
+var SubmitEl = document.createElement("input");
 
 //Assigning properties to initial DOM Elements
+highscorelinkEl.href = "./highscore.html";
 highscore_h2El.id = "view-highscore";
 highscore_h2El.innerHTML = "View High Scores!";
 timer_h2El.id = "view-highscore";
 timer_h2El.innerHTML = "Time: 00:00:00";
-highscore_divEl.appendChild(highscore_h2El);
-timer_divEl.appendChild(timer_h2El);
-headerEl.appendChild(highscore_divEl);
-headerEl.appendChild(timer_divEl);
-bodyEl.appendChild(headerEl);
 formEl.id = "form-container";
 maincontainerEl.className = "main-container";
 question_containerEl.id = "question-container";
@@ -57,9 +57,22 @@ start_button_containerEl.id = "start-button";
 start_buttonEl.className = "start-button";
 start_buttonEl.innerText = "Start Quiz";
 check_El.id = "check";
+labelEl.htmtlFor = "text";
+labelEl.textContent = "Enter initials: "
+textboxEl.id = "text";
+SubmitEl.type = "submit";
+SubmitEl.value = "Submit";
+SubmitEl.id = "Submit";
+SubmitEl.className = "start-button Submit"
 
 
 // Attaching DOM Elements to container
+highscorelinkEl.appendChild(highscore_divEl);
+highscore_divEl.appendChild(highscore_h2El);
+timer_divEl.appendChild(timer_h2El);
+headerEl.appendChild(highscorelinkEl);
+headerEl.appendChild(timer_divEl);
+bodyEl.appendChild(headerEl);
 start_button_containerEl.appendChild(start_buttonEl);
 button_containerEl.appendChild(start_button_containerEl);
 button_parent_containerEl.appendChild(button_containerEl);
@@ -92,13 +105,58 @@ function timer () {
     return timer;
 }
 
+var save_data = function(event) {
+event.preventDefault();
+var items = JSON.parse(localStorage.getItem("saved")) || [];
+var player = {
+    name: textboxEl.value,
+    score: time_limit
+}
+items.push(player);
+if(items.length > 1)
+{
+ items = organize(items);
+}
+localStorage.setItem("saved", JSON.stringify(items));
+open("./highscore.html","_self");
+}
+
+var organize = function(items) {
+    var place_holder;
+
+    for(outer_loop = 0; outer_loop < items.length; outer_loop++)
+    {
+        for(inner_loop = outer_loop+1; inner_loop < items.length; inner_loop++)
+        {
+            if(items[inner_loop].score > items[outer_loop].score)
+            {
+                //change positions
+              place_holder = items[outer_loop];
+              items[outer_loop] = items[inner_loop];
+              items[inner_loop] = place_holder;
+              place_holder = "";
+            }
+        }
+    }
+    if(items.length > 30)
+    {
+       items =  items.slice(0,29);
+    }
+    return items;
+}
+
 var the_end = function () {
     var buttons = document.querySelectorAll(".response-container");
     update_form(buttons);
     questionh1El.innerHTML = "All done!";
-    subTextEl.innerText = "Your final score is " + time_limit;
+    timer_h2El.innerText = displayTime();
+    subTextEl.innerText = "Your final score is " + time_limit + ".";
     subTextEl.id = "subtext";
     questionh1El.appendChild(subTextEl);
+    button_parent_containerEl.appendChild(labelEl);
+    button_parent_containerEl.appendChild(textboxEl);
+    button_parent_containerEl.appendChild(SubmitEl);
+    SubmitEl.onclick = save_data;
 };
 
 var setTimer = function(time_per_question) {
